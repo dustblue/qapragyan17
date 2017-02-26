@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">QA Pragyan \'17</string>
+    <string name="Username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="enter_your_phone_number">Enter your Phone Number</string>
+    <string name="assistance_provided_by_the_volunteers">Assistance provided by the volunteers</string>
+    <string name="would_you_be_interested_in_visiting_pragyan_18">Would you be interested in visiting Pragyan \'18 ?</string>
+    <string name="overall_rating_of_the_workshop">Overall rating of the workshop</string>
+    <string name="quality_of_kits_software_provided_during_the_workshop_if_applicable">Quality of kits/software provided during the workshop(if applicable)</string>
+    <string name="value_for_money_of_the_workshop">Value for money of the workshop</string>
+    <string name="ease_of_understanding_workshop_instructions">Ease of understanding workshop instructions</string>
+    <string name="yes">Yes</string>
+    <string name="submit">Submit</string>
+</resources>

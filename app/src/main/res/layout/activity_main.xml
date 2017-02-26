@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.rakesh.qapragyan17.MainActivity">
+
+    <TextView
+        android:text="@string/enter_your_phone_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/phone_text"
+        android:layout_marginTop="10dp"
+        android:textSize="@dimen/activity_text_size" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:layout_below="@+id/phone_text"
+        android:layout_alignLeft="@id/phone_text"
+        android:layout_alignStart="@id/phone_text"
+        android:layout_marginTop="14dp"
+        android:id="@+id/phone_number" />
+
+    <TextView
+        android:text="@string/assistance_provided_by_the_volunteers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/question_1"
+        android:textSize="@dimen/activity_text_size"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/phone_number"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/question_1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:id="@+id/q1_rating" />
+
+    <TextView
+        android:text="@string/ease_of_understanding_workshop_instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/question_2"
+        android:textSize="@dimen/activity_text_size"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/q1_rating"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/question_2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:id="@+id/q2_rating" />
+
+    <TextView
+        android:text="@string/value_for_money_of_the_workshop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/question_3"
+        android:textSize="@dimen/activity_text_size"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/q2_rating"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/question_3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:id="@+id/q3_rating" />
+
+    <TextView
+        android:text="@string/quality_of_kits_software_provided_during_the_workshop_if_applicable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/question_4"
+        android:textSize="@dimen/activity_text_size"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/q3_rating"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/question_4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:id="@+id/q4_rating" />
+
+    <TextView
+        android:text="@string/overall_rating_of_the_workshop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/question_5"
+        android:textSize="@dimen/activity_text_size"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/q4_rating"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/question_5"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:id="@+id/q5_rating" />
+
+    <TextView
+        android:text="@string/would_you_be_interested_in_visiting_pragyan_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/question_6"
+        android:textSize="@dimen/activity_text_size"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/q5_rating"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Switch
+        android:text="@string/yes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch1"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/question_6"
+        android:layout_centerHorizontal="true"
+        android:checked="true"
+        android:textSize="@dimen/activity_text_size" />
+
+    <Button
+        android:text="@string/submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/switch1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@color/color_default"
+        android:id="@+id/button2" />
+
+</RelativeLayout>

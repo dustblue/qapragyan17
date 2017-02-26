@@ -9,7 +9,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import rx.Observable;
 
-public interface NetworkService {
+interface NetworkService {
     @FormUrlEncoded
     @POST("admin/login")
     Observable<Response> authenticate(@Field("admin_roll") String username, @Field("admin_pass") String password);

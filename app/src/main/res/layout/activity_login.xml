@@ -33,7 +33,8 @@
         android:layout_alignLeft="@+id/login_text"
         android:layout_alignStart="@+id/login_text"
         android:layout_marginTop="48dp"
-        android:id="@+id/username" />
+        android:id="@+id/username"
+        android:text="106115071" />
 
     <TextView
         android:text="@string/password"
@@ -55,7 +56,8 @@
         android:id="@+id/password"
         android:layout_centerVertical="true"
         android:layout_alignLeft="@+id/password_text"
-        android:layout_alignStart="@+id/password_text" />
+        android:layout_alignStart="@+id/password_text"
+        android:text="123" />
 
     <Spinner
         android:layout_width="250dp"

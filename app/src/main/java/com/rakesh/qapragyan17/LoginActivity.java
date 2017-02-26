@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,11 +23,12 @@ public class LoginActivity extends AppCompatActivity {
     AlertDialog alertDialog;
     ProgressDialog progressDialog;
     Spinner spinner;
-    EditText username, password;
+    EditText username, password, editText;
     Button button;
     Retrofit retrofit;
     Observable<Response> loginObservable;
-    public static String baseUrl = "http://80bd0b47.ngrok.io";
+    String un, pw;
+    public static String baseUrl;
     public static String[] events = new String[]{"General Response", "Construction Mgmt", "Cross-Platform Dev",
             "Process Design", "Swarm Robotics", "Quadcopter", "Autotrix", "Quadbot",
             "Network Designing", "Nikon Photography", "Texas Instruments", "SEBI", "NI IoT",
@@ -39,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
 
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
+        //editText = (EditText) findViewById(R.id.url);
+
         spinner = (Spinner) findViewById(R.id.spinner);
         button = (Button) findViewById(R.id.button);
 
@@ -51,8 +55,11 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage("Logging in ");
             progressDialog.show();
-            if (username.getText() != null) {
-                if (password.getText() != null) {
+            un = username.getText().toString();
+            pw = password.getText().toString();
+            baseUrl = editText.getText().toString();
+            if (!un.equals("")) {
+                if (!pw.equals("")) {
 
                     retrofit = new Retrofit.Builder()
                             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -62,17 +69,20 @@ public class LoginActivity extends AppCompatActivity {
 
                     NetworkService networkService = retrofit.create(NetworkService.class);
 
-                    loginObservable = networkService.authenticate(username.getText().toString(),
-                            password.getText().toString());
+                    loginObservable = networkService.authenticate(un, pw);
 
-                    loginObservable.subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(response -> {
-                                if (response.getStatusCode() == 200) {
-                                    progressDialog.dismiss();
-                                    onLogin();
-                                }
-                            });
+                    try {
+                        loginObservable.subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(res -> {
+                                            if (res.getStatusCode() == 200) {
+                                                progressDialog.dismiss();
+                                                onLogin();
+                                            }
+                                        });
+                    } catch (Exception e) {
+                        Log.e("QA", e.toString());
+                    }
                 } else {
                     displayDialog("Enter the password!");
                 }
@@ -83,20 +93,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void onLogin() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("eventId", spinner.getSelectedItemId());
+        Intent intent;
+        if (spinner.getSelectedItemPosition()==1) {
+            intent = new Intent(this, GeneralActivity.class);
+        } else {
+            intent = new Intent(this, WorkshopsActivity.class);
+        }
+        intent.putExtra("eventId", spinner.getSelectedItemPosition());
         intent.putExtra("adminId", username.getText().toString());
         startActivity(intent);
         finish();
     }
 
     private void displayDialog(String text) {
-        if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-        if (alertDialog.isShowing()) {
-            alertDialog.dismiss();
-        }
         alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle("Feedback Pragyan '17");
         alertDialog.setMessage(text);

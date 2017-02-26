@@ -13,4 +13,10 @@
     <string name="yes">Yes</string>
     <string name="submit">Submit</string>
     <string name="logout">Logout</string>
+    <string name="how_did_you_get_to_know_about_pragyan">How did you get to know about Pragyan?</string>
+    <string name="overall_rating_of_pragyan_17">Overall rating of Pragyan \'17</string>
+    <string name="accessibility_of_pragyan_website_and_app">Accessibility of Pragyan website and app</string>
+    <string name="assistance_provided_by_volunteers">Assistance provided by volunteers</string>
+    <string name="ambience_of_the_fest">Ambience of the fest</string>
+    <string name="organization_of_the_fest">Organization of the fest</string>
 </resources>

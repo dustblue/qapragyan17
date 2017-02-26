@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.rakesh.qapragyan17.MainActivity">
+    tools:context="com.rakesh.qapragyan17.WorkshopsActivity">
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -148,21 +148,20 @@
                 android:textSize="@dimen/activity_text_size" />
 
             <Switch
-                android:id="@+id/switch1"
+                android:id="@+id/checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/question_6"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
-                android:checked="true"
                 android:text="@string/yes"
                 android:textSize="@dimen/activity_text_size" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/submit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/switch1"
+                android:layout_alignTop="@+id/checkbox"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="60dp"
                 android:background="@color/color_default"

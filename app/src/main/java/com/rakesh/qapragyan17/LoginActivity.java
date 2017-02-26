@@ -26,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     Button button;
     Retrofit retrofit;
     Observable<Response> loginObservable;
-    public static String baseUrl = "";
+    public static String baseUrl = "http://80bd0b47.ngrok.io";
     public static String[] events = new String[]{"General Response", "Construction Mgmt", "Cross-Platform Dev",
             "Process Design", "Swarm Robotics", "Quadcopter", "Autotrix", "Quadbot",
             "Network Designing", "Nikon Photography", "Texas Instruments", "SEBI", "NI IoT",
@@ -47,10 +47,9 @@ public class LoginActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
 
         button.setOnClickListener(view -> {
-
             progressDialog = new ProgressDialog(this);
             progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Sending Feedback..");
+            progressDialog.setMessage("Logging in ");
             progressDialog.show();
             if (username.getText() != null) {
                 if (password.getText() != null) {

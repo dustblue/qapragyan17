@@ -11,8 +11,8 @@ import rx.Observable;
 
 public interface NetworkService {
     @FormUrlEncoded
-    @POST("/")
-    Observable<Response> authenticate(@Field("user_roll") String username, @Field("user_pass") String password);
+    @POST("admin/login")
+    Observable<Response> authenticate(@Field("admin_roll") String username, @Field("admin_pass") String password);
 
     @FormUrlEncoded
     @POST("QA/response")

@@ -12,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +29,7 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
+    Switch toggle;
     TextView phoneNumber;
     RatingBar qRating[];
     Map<String, String> params = new HashMap<>();
@@ -44,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         submit = (Button) findViewById(R.id.button2);
         phoneNumber = (EditText) findViewById(R.id.phone_number);
+        toggle = (Switch) findViewById(R.id.switch1);
+        toggle.setTextOff("No");
+        toggle.setTextOn("Yes");
         qRating = new RatingBar[]{
                 (RatingBar) findViewById(R.id.q1_rating), (RatingBar) findViewById(R.id.q2_rating),
                 (RatingBar) findViewById(R.id.q3_rating), (RatingBar) findViewById(R.id.q4_rating),
@@ -64,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 retrofit = new Retrofit.Builder()
                         .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                         .addConverterFactory(GsonConverterFactory.create())
-                        .baseUrl("") //TODO Fill base URL
+                        .baseUrl(LoginActivity.baseUrl)
                         .build();
 
                 NetworkService networkService = retrofit.create(NetworkService.class);
@@ -142,8 +148,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayDialog(String text) {
-        if (alertDialog.isShowing()) {
-            alertDialog.dismiss();
+        if (alertDialog!=null) {
+            if (alertDialog.isShowing()) {
+                alertDialog.dismiss();
+            }
         }
         alertDialog = new AlertDialog.Builder(this).create();
         if (text.equals("")) {

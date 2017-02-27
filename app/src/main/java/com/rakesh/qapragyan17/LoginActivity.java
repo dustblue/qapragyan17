@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
 
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
-        //editText = (EditText) findViewById(R.id.url);
+        editText = (EditText) findViewById(R.id.url);
 
         spinner = (Spinner) findViewById(R.id.spinner);
         button = (Button) findViewById(R.id.button);
@@ -53,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         button.setOnClickListener(view -> {
             progressDialog = new ProgressDialog(this);
             progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Logging in ");
+            progressDialog.setMessage("Logging in..");
             progressDialog.show();
             un = username.getText().toString();
             pw = password.getText().toString();
@@ -71,18 +70,14 @@ public class LoginActivity extends AppCompatActivity {
 
                     loginObservable = networkService.authenticate(un, pw);
 
-                    try {
-                        loginObservable.subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(res -> {
-                                            if (res.getStatusCode() == 200) {
-                                                progressDialog.dismiss();
-                                                onLogin();
-                                            }
-                                        });
-                    } catch (Exception e) {
-                        Log.e("QA", e.toString());
-                    }
+                    loginObservable.subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(res -> {
+                                if (res.getStatusCode() == 200) {
+                                    progressDialog.dismiss();
+                                    onLogin();
+                                }
+                            });
                 } else {
                     displayDialog("Enter the password!");
                 }
@@ -94,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void onLogin() {
         Intent intent;
-        if (spinner.getSelectedItemPosition()==1) {
+        if (spinner.getSelectedItemPosition() == 1) {
             intent = new Intent(this, GeneralActivity.class);
         } else {
             intent = new Intent(this, WorkshopsActivity.class);

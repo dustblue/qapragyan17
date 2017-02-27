@@ -1,6 +1,7 @@
 package com.rakesh.qapragyan17;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,6 +54,12 @@ public class GeneralActivity extends AppCompatActivity {
 
         spinner = (Spinner) findViewById(R.id.spinner);
         phoneNumber = (EditText) findViewById(R.id.phone_number);
+        phoneNumber.setOnFocusChangeListener((view, b) -> {
+            if(!b) {
+                InputMethodManager inputMethodManager =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        });
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 R.layout.support_simple_spinner_dropdown_item, sources);
         spinner.setAdapter(adapter);
@@ -208,7 +216,7 @@ public class GeneralActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Toast.makeText(GeneralActivity.this, "Go to Menu to Logout", Toast.LENGTH_LONG).show();
+        Toast.makeText(GeneralActivity.this, "Logout to exit", Toast.LENGTH_LONG).show();
     }
 
     @Override

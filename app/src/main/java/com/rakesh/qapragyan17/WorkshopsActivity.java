@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,8 +50,8 @@ public class WorkshopsActivity extends AppCompatActivity {
         submit = (Button) findViewById(R.id.submit);
         phoneNumber = (EditText) findViewById(R.id.phone_number);
         phoneNumber.setOnFocusChangeListener((view, b) -> {
-            if(!b) {
-                InputMethodManager inputMethodManager =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (!b) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
@@ -107,10 +108,10 @@ public class WorkshopsActivity extends AppCompatActivity {
         feedbackObservable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
+                    progressDialog.dismiss();
                     if (response.getStatusCode() == 200) {
                         j++;
                         if (j == 6) {
-                            progressDialog.dismiss();
                             displayDialog("Submitted Successfully!!");
                             phoneNumber.setText(null);
                             resetRatings((ViewGroup) findViewById(R.id.activity_main));
@@ -119,9 +120,14 @@ public class WorkshopsActivity extends AppCompatActivity {
                             sendFeedback(i + 1);
                         }
                     } else {
-                        displayDialog(response.getMessage() + "Feedback submission failed. Please Try Again");
+                        displayDialog(response.getMessage() + "Feedback submission failed. Please Try Again"
+                                + response.getStatusCode() + " : " + response.getMessage());
                     }
 
+                }, throwable -> {
+                    progressDialog.dismiss();
+                    displayDialog(throwable.getMessage() + "Network Error. Please Try Again");
+                    Log.e("debug", throwable.getMessage());
                 });
     }
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -109,10 +110,10 @@ public class GeneralActivity extends AppCompatActivity {
         feedbackObservable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
+                    progressDialog.dismiss();
                     if (response.getStatusCode() == 200) {
                         j++;
                         if (j == 6) {
-                            progressDialog.dismiss();
                             displayDialog("Submitted Successfully!!");
                             phoneNumber.setText(null);
                             resetRatings((ViewGroup) findViewById(R.id.activity_main));
@@ -124,6 +125,10 @@ public class GeneralActivity extends AppCompatActivity {
                         displayDialog(response.getMessage() + "Feedback submission failed. Please Try Again");
                     }
 
+                }, throwable -> {
+                    progressDialog.dismiss();
+                    displayDialog(throwable.getMessage() + "Network Error. Please Try Again");
+                    Log.e("debug", throwable.getMessage());
                 });
     }
 

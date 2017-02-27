@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -72,11 +74,18 @@ public class LoginActivity extends AppCompatActivity {
 
                     loginObservable.subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(res -> {
-                                if (res.getStatusCode() == 200) {
-                                    progressDialog.dismiss();
+                            .subscribe(response -> {
+                                progressDialog.dismiss();
+                                if (response.getStatusCode() == 200) {
                                     onLogin();
+                                } else {
+                                    Toast.makeText(LoginActivity.this, response.getStatusCode() + " : "
+                                            + response.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
+                            }, throwable -> {
+                                progressDialog.dismiss();
+                                displayDialog(throwable.getMessage() + "Network Error. Please Try Again");
+                                Log.e("debug", throwable.getMessage());
                             });
                 } else {
                     displayDialog("Enter the password!");

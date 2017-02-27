@@ -36,7 +36,7 @@ public class WorkshopsActivity extends AppCompatActivity {
     RatingBar qRating[];
     Map<String, String> params = new HashMap<>();
     String adminId;
-    int eventId, j;
+    int eventId;
     Retrofit retrofit;
     Observable<Response> feedbackObservable;
     Button submit;
@@ -108,14 +108,12 @@ public class WorkshopsActivity extends AppCompatActivity {
         feedbackObservable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    progressDialog.dismiss();
                     if (response.getStatusCode() == 200) {
-                        j++;
-                        if (j == 6) {
+                        if (i == 5) {
+                            progressDialog.dismiss();
                             displayDialog("Submitted Successfully!!");
                             phoneNumber.setText(null);
                             resetRatings((ViewGroup) findViewById(R.id.activity_main));
-                            j = 0;
                         } else {
                             sendFeedback(i + 1);
                         }

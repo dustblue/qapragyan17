@@ -38,7 +38,7 @@ public class GeneralActivity extends AppCompatActivity {
     RatingBar qRating[];
     Map<String, String> params = new HashMap<>();
     String adminId;
-    int eventId, j;
+    int eventId;
     Retrofit retrofit;
     Observable<Response> feedbackObservable;
     Button submit;
@@ -47,6 +47,7 @@ public class GeneralActivity extends AppCompatActivity {
 
     public static String[] sources = new String[]{"Newspapers", "Posters", "Social Media",
             "Website", "Friends", "Other"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,8 +57,8 @@ public class GeneralActivity extends AppCompatActivity {
         spinner = (Spinner) findViewById(R.id.spinner);
         phoneNumber = (EditText) findViewById(R.id.phone_number);
         phoneNumber.setOnFocusChangeListener((view, b) -> {
-            if(!b) {
-                InputMethodManager inputMethodManager =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (!b) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
@@ -110,14 +111,12 @@ public class GeneralActivity extends AppCompatActivity {
         feedbackObservable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    progressDialog.dismiss();
                     if (response.getStatusCode() == 200) {
-                        j++;
-                        if (j == 6) {
+                        if (i == 5) {
+                            progressDialog.dismiss();
                             displayDialog("Submitted Successfully!!");
                             phoneNumber.setText(null);
                             resetRatings((ViewGroup) findViewById(R.id.activity_main));
-                            j = 0;
                         } else {
                             sendFeedback(i + 1);
                         }

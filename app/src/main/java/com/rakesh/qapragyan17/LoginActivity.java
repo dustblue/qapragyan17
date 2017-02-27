@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void onLogin() {
         Intent intent;
-        if (spinner.getSelectedItemPosition() == 1) {
+        if (spinner.getSelectedItemPosition() == 0) {
             intent = new Intent(this, GeneralActivity.class);
         } else {
             intent = new Intent(this, WorkshopsActivity.class);

@@ -37,12 +37,12 @@
                 android:layout_alignLeft="@id/phone_text"
                 android:layout_alignStart="@id/phone_text"
                 android:layout_below="@+id/phone_text"
-                android:layout_marginTop="14dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
-                android:textSize="@dimen/activity_text_size"
+                android:layout_marginTop="14dp"
                 android:ems="10"
-                android:inputType="phone"/>
+                android:inputType="phone"
+                android:textSize="@dimen/activity_text_size" />
 
             <TextView
                 android:id="@+id/question_1"
@@ -157,7 +157,6 @@
                 android:layout_below="@+id/question_6"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
-                android:text="@string/yes"
                 android:textSize="@dimen/activity_text_size" />
 
             <Button

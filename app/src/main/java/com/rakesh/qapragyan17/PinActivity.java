@@ -26,7 +26,7 @@ public class PinActivity extends AppCompatActivity {
     Button button;
     Retrofit retrofit;
     Observable<Response> pinObservable;
-    public static String baseUrl = "https://api.pragyan.org/";
+    String baseUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +40,7 @@ public class PinActivity extends AppCompatActivity {
         eventId = intent.getIntExtra("eventId", 0);
         userId = intent.getIntExtra("user_id", 0);
         userToken = intent.getStringExtra("user_token");
+        baseUrl = intent.getStringExtra("baseUrl");
 
         button.setOnClickListener(view -> {
             pin = pinText.getText().toString();
@@ -91,6 +92,7 @@ public class PinActivity extends AppCompatActivity {
         intent.putExtra("eventId", eventId);
         intent.putExtra("user_token", userToken);
         intent.putExtra("user_id", userId);
+        intent.putExtra("baseUrl", baseUrl);
 
         startActivity(intent);
         finish();

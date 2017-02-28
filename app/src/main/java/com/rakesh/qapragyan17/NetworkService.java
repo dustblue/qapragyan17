@@ -11,7 +11,6 @@ interface NetworkService {
     @POST("auth/app")
     Observable<Response> authenticate(@Field("user_email") String username, @Field("user_pass") String password);
 
-    @FormUrlEncoded
     @POST("QA/response")
     Observable<Response> sendFeedback(@Body Feedback feedback);
 

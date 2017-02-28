@@ -1,7 +1,11 @@
 package com.rakesh.qapragyan17;
 
-class Data {
+import com.google.gson.annotations.SerializedName;
 
-    Integer question_id;
+class Data {
+    @SerializedName("question_id")
+    int question_id;
+
+    @SerializedName("response")
     String response;
 }

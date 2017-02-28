@@ -28,7 +28,8 @@ public class LoginActivity extends AppCompatActivity {
     Retrofit retrofit;
     Observable<Response> loginObservable;
     String un, pw;
-    public static String baseUrl = "https://api.pragyan.org/";
+    public static String baseUrl;
+    public static String url = "https://api.pragyan.org/";
     public static String[] events = new String[]{"General Response", "Construction Mgmt", "Cross-Platform Dev",
             "Process Design", "Swarm Robotics", "Quadcopter", "Autotrix", "Quadbot",
             "Network Designing", "Nikon Photography", "Texas Instruments", "SEBI", "NI IoT",
@@ -53,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         button.setOnClickListener(view -> {
             un = username.getText().toString();
             pw = password.getText().toString();
+            baseUrl = editText.getText().toString();
             if (!un.equals("")) {
                 if (!pw.equals("")) {
                     progressDialog = new ProgressDialog(this);
@@ -99,6 +101,7 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtra("eventId", spinner.getSelectedItemPosition());
         intent.putExtra("user_id", id);
         intent.putExtra("user_token", token);
+        intent.putExtra("baseUrl", baseUrl);
         startActivity(intent);
         finish();
     }

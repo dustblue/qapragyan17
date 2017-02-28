@@ -11,7 +11,7 @@
     tools:context="com.rakesh.qapragyan17.PinActivity">
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
@@ -27,4 +27,17 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="34dp"
         android:id="@+id/button2" />
+
+    <TextView
+        android:text="Pin : "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/pin"
+        android:layout_marginBottom="20dp"
+        android:layout_alignLeft="@id/pin"
+        android:layout_alignStart="@id/pin"
+        android:textSize="@dimen/activity_text_size"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/textView" />
 </RelativeLayout>

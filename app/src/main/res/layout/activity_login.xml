@@ -30,11 +30,11 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/login_text"
         android:layout_alignStart="@+id/login_text"
-        android:layout_alignTop="@+id/login_text"
-        android:layout_marginTop="48dp"
+        android:layout_below="@+id/login_text"
+        android:layout_marginTop="12dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="106115071" />
+        android:text="arvind@gmail.com" />
 
     <TextView
         android:id="@+id/password_text"
@@ -54,11 +54,10 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/password_text"
         android:layout_alignStart="@+id/password_text"
-        android:layout_alignTop="@id/password_text"
-        android:layout_marginTop="48dp"
+        android:layout_centerVertical="true"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="123" />
+        android:text="krishna" />
 
     <Spinner
         android:id="@+id/spinner"
@@ -73,9 +72,9 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner"
+        android:layout_above="@+id/url"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp"
+        android:layout_marginBottom="40dp"
         android:background="@color/color_default"
         android:text="@string/login"
         android:textSize="18sp" />
@@ -87,6 +86,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:text="http://90aff14d.ngrok.io/" />
 
 </RelativeLayout>

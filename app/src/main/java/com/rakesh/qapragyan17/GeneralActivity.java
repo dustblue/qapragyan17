@@ -16,6 +16,8 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -27,7 +29,7 @@ public class GeneralActivity extends AppCompatActivity {
 
     Spinner spinner;
     RatingBar qRating[];
-    String userToken;
+    String userToken, baseUrl;
     int eventId, userId;
     Retrofit retrofit;
     Observable<Response> feedbackObservable;
@@ -59,6 +61,7 @@ public class GeneralActivity extends AppCompatActivity {
         eventId = intent.getIntExtra("eventId", 0);
         userId = intent.getIntExtra("user_id", 0);
         userToken = intent.getStringExtra("user_token");
+        baseUrl = intent.getStringExtra("baseUrl");
 
         submit.setOnClickListener(view -> {
                     if (isValidated()) {
@@ -70,7 +73,7 @@ public class GeneralActivity extends AppCompatActivity {
                         retrofit = new Retrofit.Builder()
                                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                                 .addConverterFactory(GsonConverterFactory.create())
-                                .baseUrl(LoginActivity.baseUrl)
+                                .baseUrl(baseUrl)
                                 .build();
 
                         NetworkService networkService = retrofit.create(NetworkService.class);
@@ -100,6 +103,7 @@ public class GeneralActivity extends AppCompatActivity {
 
     private Feedback getFeedback() {
         Feedback feedback = new Feedback();
+        feedback.data = new ArrayList<>();
         feedback.user_id = userId;
         feedback.user_token = userToken;
         feedback.event_name = LoginActivity.events[eventId];
@@ -107,7 +111,7 @@ public class GeneralActivity extends AppCompatActivity {
         int i;
         for (i = 0; i < 6; i++) {
             Data data = new Data();
-            data.question_id = i+1;
+            data.question_id = i + 1;
             if (i == 5) {
                 data.response = sources[spinner.getSelectedItemPosition()];
             } else {
@@ -126,23 +130,23 @@ public class GeneralActivity extends AppCompatActivity {
                         if (qRating[4].getRating() != 0) {
                             return true;
                         } else {
-                            displayDialog("");
+                            displayDialog("Please rate all questions");
                             return false;
                         }
                     } else {
-                        displayDialog("");
+                        displayDialog("Please rate all questions");
                         return false;
                     }
                 } else {
-                    displayDialog("");
+                    displayDialog("Please rate all questions");
                     return false;
                 }
             } else {
-                displayDialog("");
+                displayDialog("Please rate all questions");
                 return false;
             }
         } else {
-            displayDialog("");
+            displayDialog("Please rate all questions");
             return false;
         }
     }
@@ -166,9 +170,6 @@ public class GeneralActivity extends AppCompatActivity {
             }
         }
         alertDialog = new AlertDialog.Builder(this).create();
-        if (text.equals("")) {
-            alertDialog.setMessage("Please rate all questions");
-        }
         alertDialog.setTitle("Feedback Pragyan '17");
         alertDialog.setMessage(text);
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Ok",

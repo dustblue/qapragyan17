@@ -15,6 +15,8 @@ import android.widget.RatingBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -26,7 +28,7 @@ public class WorkshopsActivity extends AppCompatActivity {
 
     Switch checkBox;
     RatingBar qRating[];
-    String userToken;
+    String userToken, baseUrl;
     int eventId, userId;
     Retrofit retrofit;
     Observable<Response> feedbackObservable;
@@ -52,6 +54,7 @@ public class WorkshopsActivity extends AppCompatActivity {
         eventId = intent.getIntExtra("eventId", 0);
         userId = intent.getIntExtra("user_id", 0);
         userToken = intent.getStringExtra("user_token");
+        baseUrl = intent.getStringExtra("baseUrl");
 
         submit.setOnClickListener(view -> {
                     if (isValidated()) {
@@ -63,7 +66,7 @@ public class WorkshopsActivity extends AppCompatActivity {
                         retrofit = new Retrofit.Builder()
                                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                                 .addConverterFactory(GsonConverterFactory.create())
-                                .baseUrl(LoginActivity.baseUrl)
+                                .baseUrl(baseUrl)
                                 .build();
 
                         NetworkService networkService = retrofit.create(NetworkService.class);
@@ -73,8 +76,8 @@ public class WorkshopsActivity extends AppCompatActivity {
                         feedbackObservable.subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(response -> {
+                                    progressDialog.dismiss();
                                     if (response.getStatusCode() == 200) {
-                                        progressDialog.dismiss();
                                         displayDialog("Submitted Successfully!!");
                                         resetRatings((ViewGroup) findViewById(R.id.activity_main));
                                     } else {
@@ -93,6 +96,7 @@ public class WorkshopsActivity extends AppCompatActivity {
 
     private Feedback getFeedback() {
         Feedback feedback = new Feedback();
+        feedback.data = new ArrayList<>();
         feedback.user_id = userId;
         feedback.user_token = userToken;
         feedback.event_name = LoginActivity.events[eventId];
@@ -102,7 +106,11 @@ public class WorkshopsActivity extends AppCompatActivity {
             Data data = new Data();
             data.question_id = i + 1;
             if (i == 5) {
-                data.response = "No"; /*checkBox.isChecked()*/
+                if (checkBox.isChecked()) {
+                    data.response = "Yes";
+                } else {
+                    data.response = "No";
+                }
             } else {
                 data.response = Float.toString(qRating[i].getRating());
             }
@@ -119,19 +127,19 @@ public class WorkshopsActivity extends AppCompatActivity {
                     if (qRating[4].getRating() != 0) {
                         return true;
                     } else {
-                        displayDialog("");
+                        displayDialog("Please rate all questions");
                         return false;
                     }
                 } else {
-                    displayDialog("");
+                    displayDialog("Please rate all questions");
                     return false;
                 }
             } else {
-                displayDialog("");
+                displayDialog("Please rate all questions");
                 return false;
             }
         } else {
-            displayDialog("");
+            displayDialog("Please rate all questions");
             return false;
         }
     }
@@ -155,9 +163,7 @@ public class WorkshopsActivity extends AppCompatActivity {
             }
         }
         alertDialog = new AlertDialog.Builder(this).create();
-        if (text.equals("")) {
-            alertDialog.setMessage("Please rate all questions");
-        }
+
         alertDialog.setTitle("Feedback Pragyan '17");
         alertDialog.setMessage(text);
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Ok",

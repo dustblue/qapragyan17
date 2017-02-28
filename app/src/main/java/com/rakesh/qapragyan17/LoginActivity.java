@@ -52,15 +52,15 @@ public class LoginActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
 
         button.setOnClickListener(view -> {
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Logging in..");
-            progressDialog.show();
-            un = username.getText().toString();
-            pw = password.getText().toString();
-            baseUrl = editText.getText().toString();
             if (!un.equals("")) {
                 if (!pw.equals("")) {
+                    progressDialog = new ProgressDialog(this);
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.setMessage("Logging in..");
+                    progressDialog.show();
+                    un = username.getText().toString();
+                    pw = password.getText().toString();
+                    baseUrl = editText.getText().toString();
 
                     retrofit = new Retrofit.Builder()
                             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

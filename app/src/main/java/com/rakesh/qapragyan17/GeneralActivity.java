@@ -1,7 +1,6 @@
 package com.rakesh.qapragyan17;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -11,13 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -32,9 +28,7 @@ import rx.schedulers.Schedulers;
 
 public class GeneralActivity extends AppCompatActivity {
 
-
     Spinner spinner;
-    TextView phoneNumber;
     RatingBar qRating[];
     Map<String, String> params = new HashMap<>();
     String adminId;
@@ -55,13 +49,6 @@ public class GeneralActivity extends AppCompatActivity {
         submit = (Button) findViewById(R.id.submit);
 
         spinner = (Spinner) findViewById(R.id.spinner);
-        phoneNumber = (EditText) findViewById(R.id.phone_number);
-        phoneNumber.setOnFocusChangeListener((view, b) -> {
-            if (!b) {
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
-        });
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 R.layout.support_simple_spinner_dropdown_item, sources);
         spinner.setAdapter(adapter);
@@ -83,7 +70,6 @@ public class GeneralActivity extends AppCompatActivity {
                 progressDialog.setMessage("Sending Feedback..");
                 progressDialog.show();
 
-                params.put("user_phoneno", phoneNumber.getText().toString());
                 params.put("event_name", LoginActivity.events[eventId]);
                 params.put("admin_id", adminId);
 
@@ -106,43 +92,41 @@ public class GeneralActivity extends AppCompatActivity {
         } else {
             params.put("response", Float.toString(qRating[i].getRating()));
         }
-        feedbackObservable = networkService.sendFeedback(params);
+        try {
+            feedbackObservable = networkService.sendFeedback(params);
 
-        feedbackObservable.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    if (response.getStatusCode() == 200) {
-                        if (i == 5) {
-                            progressDialog.dismiss();
-                            displayDialog("Submitted Successfully!!");
-                            phoneNumber.setText(null);
-                            resetRatings((ViewGroup) findViewById(R.id.activity_main));
+            feedbackObservable.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(response -> {
+                        if (response.getStatusCode() == 200) {
+                            if (i == 5) {
+                                progressDialog.dismiss();
+                                displayDialog("Submitted Successfully!!");
+                                resetRatings((ViewGroup) findViewById(R.id.activity_main));
+                            } else {
+                                sendFeedback(i + 1);
+                            }
                         } else {
-                            sendFeedback(i + 1);
+                            displayDialog("Feedback submission failed, " + response.getStatusCode()
+                                    + " : " + response.getMessage());
                         }
-                    } else {
-                        displayDialog(response.getMessage() + "Feedback submission failed. Please Try Again");
-                    }
-
-                }, throwable -> {
-                    progressDialog.dismiss();
-                    displayDialog(throwable.getMessage() + "Network Error. Please Try Again");
-                    Log.e("debug", throwable.getMessage());
-                });
+                    }, throwable -> {
+                        progressDialog.dismiss();
+                        displayDialog(throwable.getMessage() + "Network Error. Please Try Again");
+                        Log.e("debug", throwable.getMessage());
+                    });
+        } catch (Exception e) {
+            Log.e("debug", e.getMessage());
+        }
     }
 
     private boolean isValidated() {
-        if (phoneNumber.getText() != null) {
-            if (qRating[0].getRating() != 0) {
-                if (qRating[1].getRating() != 0) {
-                    if (qRating[2].getRating() != 0) {
-                        if (qRating[3].getRating() != 0) {
-                            if (qRating[4].getRating() != 0) {
-                                return true;
-                            } else {
-                                displayDialog("");
-                                return false;
-                            }
+        if (qRating[0].getRating() != 0) {
+            if (qRating[1].getRating() != 0) {
+                if (qRating[2].getRating() != 0) {
+                    if (qRating[3].getRating() != 0) {
+                        if (qRating[4].getRating() != 0) {
+                            return true;
                         } else {
                             displayDialog("");
                             return false;
@@ -160,7 +144,7 @@ public class GeneralActivity extends AppCompatActivity {
                 return false;
             }
         } else {
-            displayDialog("Please enter your phone number");
+            displayDialog("");
             return false;
         }
     }

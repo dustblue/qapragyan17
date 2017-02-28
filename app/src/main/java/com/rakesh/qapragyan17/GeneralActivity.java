@@ -16,9 +16,6 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -30,9 +27,8 @@ public class GeneralActivity extends AppCompatActivity {
 
     Spinner spinner;
     RatingBar qRating[];
-    Map<String, String> params = new HashMap<>();
-    String adminId, token;
-    int eventId;
+    String userToken;
+    int eventId, userId;
     Retrofit retrofit;
     Observable<Response> feedbackObservable;
     Button submit;
@@ -60,65 +56,66 @@ public class GeneralActivity extends AppCompatActivity {
         };
 
         Intent intent = getIntent();
-        adminId = intent.getStringExtra("adminId");
         eventId = intent.getIntExtra("eventId", 0);
-        token = intent.getStringExtra("token");
+        userId = intent.getIntExtra("user_id", 0);
+        userToken = intent.getStringExtra("user_token");
 
         submit.setOnClickListener(view -> {
+                    if (isValidated()) {
+                        progressDialog = new ProgressDialog(this);
+                        progressDialog.setIndeterminate(true);
+                        progressDialog.setMessage("Sending Feedback..");
+                        progressDialog.show();
 
-            if (isValidated()) {
-                progressDialog = new ProgressDialog(this);
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Sending Feedback..");
-                progressDialog.show();
+                        retrofit = new Retrofit.Builder()
+                                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .baseUrl(LoginActivity.baseUrl)
+                                .build();
 
-                params.put("admin_token", token);
-                params.put("event_name", LoginActivity.events[eventId]);
-                params.put("admin_id", adminId);
+                        NetworkService networkService = retrofit.create(NetworkService.class);
 
-                sendFeedback(0);
-            }
-        });
+                        feedbackObservable = networkService.sendFeedback(getFeedback());
+
+                        feedbackObservable.subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(response -> {
+                                    if (response.getStatusCode() == 200) {
+                                        progressDialog.dismiss();
+                                        displayDialog("Submitted Successfully!!");
+                                        resetRatings((ViewGroup) findViewById(R.id.activity_main));
+                                    } else {
+                                        displayDialog("Feedback submission failed, " + response.getStatusCode()
+                                                + " : " + response.getMessage());
+                                    }
+                                }, throwable -> {
+                                    progressDialog.dismiss();
+                                    displayDialog("Network Error. Please Try Again");
+                                    Log.e("debug", throwable.getMessage());
+                                });
+                    }
+                }
+        );
     }
 
-    private void sendFeedback(int i) {
-        params.put("question_id", Integer.toString(i + 1));
-        if (i == 5) {
-            params.put("response", sources[spinner.getSelectedItemPosition()]);
-        } else {
-            params.put("response", Float.toString(qRating[i].getRating()));
+    private Feedback getFeedback() {
+        Feedback feedback = new Feedback();
+        feedback.user_id = userId;
+        feedback.user_token = userToken;
+        feedback.event_name = LoginActivity.events[eventId];
+
+        int i;
+        for (i = 0; i < 6; i++) {
+            Data data = new Data();
+            data.question_id = i+1;
+            if (i == 5) {
+                data.response = sources[spinner.getSelectedItemPosition()];
+            } else {
+                data.response = Float.toString(qRating[i].getRating());
+            }
+            feedback.data.add(data);
         }
-
-        retrofit = new Retrofit.Builder()
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(LoginActivity.baseUrl)
-                .build();
-
-        NetworkService networkService = retrofit.create(NetworkService.class);
-
-        feedbackObservable = networkService.sendFeedback(params);
-
-        feedbackObservable.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    if (response.getStatusCode() == 200) {
-                        if (i == 5) {
-                            progressDialog.dismiss();
-                            displayDialog("Submitted Successfully!!");
-                            resetRatings((ViewGroup) findViewById(R.id.activity_main));
-                        } else {
-                            sendFeedback(i + 1);
-                        }
-                    } else {
-                        displayDialog("Feedback submission failed, " + response.getStatusCode()
-                                + " : " + response.getMessage());
-                    }
-                }, throwable -> {
-                    progressDialog.dismiss();
-                    displayDialog("Network Error. Please Try Again");
-                    Log.e("debug", throwable.getMessage());
-                });
+        return feedback;
     }
 
     private boolean isValidated() {

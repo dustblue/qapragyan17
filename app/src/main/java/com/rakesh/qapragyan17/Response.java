@@ -9,6 +9,17 @@ class Response {
 
     private String message;
 
+    @SerializedName("user_id")
+    private int userId;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     public int getStatusCode() {
         return statusCode;
     }

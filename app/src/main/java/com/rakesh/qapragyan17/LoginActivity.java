@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     Retrofit retrofit;
     Observable<Response> loginObservable;
     String un, pw;
-    public static String baseUrl;
+    public static String baseUrl = "https://api.pragyan.org/";
     public static String[] events = new String[]{"General Response", "Construction Mgmt", "Cross-Platform Dev",
             "Process Design", "Swarm Robotics", "Quadcopter", "Autotrix", "Quadbot",
             "Network Designing", "Nikon Photography", "Texas Instruments", "SEBI", "NI IoT",
@@ -59,7 +59,6 @@ public class LoginActivity extends AppCompatActivity {
                     progressDialog.setIndeterminate(true);
                     progressDialog.setMessage("Logging in..");
                     progressDialog.show();
-                    baseUrl = editText.getText().toString();
 
                     retrofit = new Retrofit.Builder()
                             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -76,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                             .subscribe(response -> {
                                 progressDialog.dismiss();
                                 if (response.getStatusCode() == 200) {
-                                    onLogin(response.getMessage());
+                                    onLogin(response.getMessage(), response.getUserId());
                                 } else {
                                     displayDialog("Error : " + response.getStatusCode()
                                             + " Please Try Again");
@@ -95,16 +94,11 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void onLogin(String token) {
-        Intent intent;
-        if (spinner.getSelectedItemPosition() == 0) {
-            intent = new Intent(this, GeneralActivity.class);
-        } else {
-            intent = new Intent(this, WorkshopsActivity.class);
-        }
+    private void onLogin(String token, int id) {
+        Intent intent = new Intent(this, PinActivity.class);
         intent.putExtra("eventId", spinner.getSelectedItemPosition());
-        intent.putExtra("adminId", username.getText().toString());
-        intent.putExtra("token", token);
+        intent.putExtra("user_id", id);
+        intent.putExtra("user_token", token);
         startActivity(intent);
         finish();
     }

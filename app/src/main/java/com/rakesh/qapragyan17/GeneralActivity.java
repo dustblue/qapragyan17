@@ -31,7 +31,7 @@ public class GeneralActivity extends AppCompatActivity {
     Spinner spinner;
     RatingBar qRating[];
     Map<String, String> params = new HashMap<>();
-    String adminId;
+    String adminId, token;
     int eventId;
     Retrofit retrofit;
     Observable<Response> feedbackObservable;
@@ -62,6 +62,8 @@ public class GeneralActivity extends AppCompatActivity {
         Intent intent = getIntent();
         adminId = intent.getStringExtra("adminId");
         eventId = intent.getIntExtra("eventId", 0);
+        token = intent.getStringExtra("token");
+
         submit.setOnClickListener(view -> {
 
             if (isValidated()) {
@@ -70,6 +72,7 @@ public class GeneralActivity extends AppCompatActivity {
                 progressDialog.setMessage("Sending Feedback..");
                 progressDialog.show();
 
+                params.put("admin_token", token);
                 params.put("event_name", LoginActivity.events[eventId]);
                 params.put("admin_id", adminId);
 
@@ -79,6 +82,13 @@ public class GeneralActivity extends AppCompatActivity {
     }
 
     private void sendFeedback(int i) {
+        params.put("question_id", Integer.toString(i + 1));
+        if (i == 5) {
+            params.put("response", sources[spinner.getSelectedItemPosition()]);
+        } else {
+            params.put("response", Float.toString(qRating[i].getRating()));
+        }
+
         retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -86,38 +96,29 @@ public class GeneralActivity extends AppCompatActivity {
                 .build();
 
         NetworkService networkService = retrofit.create(NetworkService.class);
-        params.put("question_id", Integer.toString(i + 1));
-        if (i == 5) {
-            params.put("response", sources[spinner.getSelectedItemPosition()]);
-        } else {
-            params.put("response", Float.toString(qRating[i].getRating()));
-        }
-        try {
-            feedbackObservable = networkService.sendFeedback(params);
 
-            feedbackObservable.subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(response -> {
-                        if (response.getStatusCode() == 200) {
-                            if (i == 5) {
-                                progressDialog.dismiss();
-                                displayDialog("Submitted Successfully!!");
-                                resetRatings((ViewGroup) findViewById(R.id.activity_main));
-                            } else {
-                                sendFeedback(i + 1);
-                            }
+        feedbackObservable = networkService.sendFeedback(params);
+
+        feedbackObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    if (response.getStatusCode() == 200) {
+                        if (i == 5) {
+                            progressDialog.dismiss();
+                            displayDialog("Submitted Successfully!!");
+                            resetRatings((ViewGroup) findViewById(R.id.activity_main));
                         } else {
-                            displayDialog("Feedback submission failed, " + response.getStatusCode()
-                                    + " : " + response.getMessage());
+                            sendFeedback(i + 1);
                         }
-                    }, throwable -> {
-                        progressDialog.dismiss();
-                        displayDialog(throwable.getMessage() + "Network Error. Please Try Again");
-                        Log.e("debug", throwable.getMessage());
-                    });
-        } catch (Exception e) {
-            Log.e("debug", e.getMessage());
-        }
+                    } else {
+                        displayDialog("Feedback submission failed, " + response.getStatusCode()
+                                + " : " + response.getMessage());
+                    }
+                }, throwable -> {
+                    progressDialog.dismiss();
+                    displayDialog("Network Error. Please Try Again");
+                    Log.e("debug", throwable.getMessage());
+                });
     }
 
     private boolean isValidated() {

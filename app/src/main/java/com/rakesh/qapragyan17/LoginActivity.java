@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -52,14 +51,14 @@ public class LoginActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
 
         button.setOnClickListener(view -> {
+            un = username.getText().toString();
+            pw = password.getText().toString();
             if (!un.equals("")) {
                 if (!pw.equals("")) {
                     progressDialog = new ProgressDialog(this);
                     progressDialog.setIndeterminate(true);
                     progressDialog.setMessage("Logging in..");
                     progressDialog.show();
-                    un = username.getText().toString();
-                    pw = password.getText().toString();
                     baseUrl = editText.getText().toString();
 
                     retrofit = new Retrofit.Builder()
@@ -77,14 +76,14 @@ public class LoginActivity extends AppCompatActivity {
                             .subscribe(response -> {
                                 progressDialog.dismiss();
                                 if (response.getStatusCode() == 200) {
-                                    onLogin();
+                                    onLogin(response.getMessage());
                                 } else {
-                                    Toast.makeText(LoginActivity.this, response.getStatusCode() + " : "
-                                            + response.getMessage(), Toast.LENGTH_SHORT).show();
+                                    displayDialog("Error : " + response.getStatusCode()
+                                            + " Please Try Again");
                                 }
                             }, throwable -> {
                                 progressDialog.dismiss();
-                                displayDialog(throwable.getMessage() + "Network Error. Please Try Again");
+                                displayDialog("Network Error. Please Try Again");
                                 Log.e("debug", throwable.getMessage());
                             });
                 } else {
@@ -96,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void onLogin() {
+    private void onLogin(String token) {
         Intent intent;
         if (spinner.getSelectedItemPosition() == 0) {
             intent = new Intent(this, GeneralActivity.class);
@@ -105,6 +104,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         intent.putExtra("eventId", spinner.getSelectedItemPosition());
         intent.putExtra("adminId", username.getText().toString());
+        intent.putExtra("token", token);
         startActivity(intent);
         finish();
     }

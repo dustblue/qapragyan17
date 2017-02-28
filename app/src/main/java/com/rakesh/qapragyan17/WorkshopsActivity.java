@@ -72,13 +72,6 @@ public class WorkshopsActivity extends AppCompatActivity {
     }
 
     private void sendFeedback(int i) {
-        retrofit = new Retrofit.Builder()
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(LoginActivity.baseUrl)
-                .build();
-
-        NetworkService networkService = retrofit.create(NetworkService.class);
         params.put("question_id", Integer.toString(i + 1));
         if (i == 5) {
             if (checkBox.isChecked()) {
@@ -89,32 +82,37 @@ public class WorkshopsActivity extends AppCompatActivity {
         } else {
             params.put("response", Float.toString(qRating[i].getRating()));
         }
-        try {
-            feedbackObservable = networkService.sendFeedback(params);
 
-            feedbackObservable.subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(response -> {
-                        if (response.getStatusCode() == 200) {
-                            if (i == 5) {
-                                progressDialog.dismiss();
-                                displayDialog("Submitted Successfully!!");
-                                resetRatings((ViewGroup) findViewById(R.id.activity_main));
-                            } else {
-                                sendFeedback(i + 1);
-                            }
+        retrofit = new Retrofit.Builder()
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(LoginActivity.baseUrl)
+                .build();
+
+        NetworkService networkService = retrofit.create(NetworkService.class);
+
+        feedbackObservable = networkService.sendFeedback(params);
+
+        feedbackObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    if (response.getStatusCode() == 200) {
+                        if (i == 5) {
+                            progressDialog.dismiss();
+                            displayDialog("Submitted Successfully!!");
+                            resetRatings((ViewGroup) findViewById(R.id.activity_main));
                         } else {
-                            displayDialog("Feedback submission failed, " + response.getStatusCode()
-                                    + " : " + response.getMessage());
+                            sendFeedback(i + 1);
                         }
-                    }, throwable -> {
-                        progressDialog.dismiss();
-                        displayDialog(throwable.getMessage() + "Network Error. Please Try Again");
-                        Log.e("debug", throwable.getMessage());
-                    });
-        } catch (Exception e) {
-            Log.e("debug", e.getMessage());
-        }
+                    } else {
+                        displayDialog("Feedback submission failed, " + response.getStatusCode()
+                                + " : " + response.getMessage());
+                    }
+                }, throwable -> {
+                    progressDialog.dismiss();
+                    displayDialog("Network Error. Please Try Again");
+                    Log.e("debug", throwable.getMessage());
+                });
     }
 
     private boolean isValidated() {

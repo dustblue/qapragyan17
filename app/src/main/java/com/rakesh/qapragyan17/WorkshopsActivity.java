@@ -99,6 +99,8 @@ public class WorkshopsActivity extends AppCompatActivity {
         feedback.data = new ArrayList<>();
         feedback.user_id = userId;
         feedback.user_token = userToken;
+        feedback.team_name = "QA";
+        feedback.team_pin = 456;
         feedback.event_name = LoginActivity.events[eventId];
 
         int i;
@@ -123,7 +125,7 @@ public class WorkshopsActivity extends AppCompatActivity {
     private boolean isValidated() {
         if (qRating[0].getRating() != 0) {
             if (qRating[1].getRating() != 0) {
-                if (qRating[3].getRating() != 0) {
+                if (qRating[2].getRating() != 0) {
                     if (qRating[4].getRating() != 0) {
                         return true;
                     } else {

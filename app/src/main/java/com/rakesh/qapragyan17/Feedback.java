@@ -16,6 +16,12 @@ class Feedback {
     @SerializedName("user_token")
     String user_token;
 
+    @SerializedName("team_pin")
+    int team_pin;
+
+    @SerializedName("team_name")
+    String team_name;
+
     @SerializedName("data")
     List<Data> data;
 }

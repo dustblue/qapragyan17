@@ -106,6 +106,8 @@ public class GeneralActivity extends AppCompatActivity {
         feedback.data = new ArrayList<>();
         feedback.user_id = userId;
         feedback.user_token = userToken;
+        feedback.team_name = "QA";
+        feedback.team_pin = 456;
         feedback.event_name = LoginActivity.events[eventId];
 
         int i;

@@ -27,16 +27,15 @@ import rx.schedulers.Schedulers;
 
 public class GeneralActivity extends AppCompatActivity {
 
-    Spinner spinner;
-    RatingBar qRating[];
-    String userToken, baseUrl;
-    int eventId, userId;
-    Retrofit retrofit;
-    Observable<Response> feedbackObservable;
-    Button submit;
-    AlertDialog alertDialog;
-    ProgressDialog progressDialog;
-
+    private Spinner spinner;
+    private RatingBar qRating[];
+    private String userToken;
+    private int eventId, userId, teamPin;
+    private Retrofit retrofit;
+    private Observable<Response> feedbackObservable;
+    private AlertDialog alertDialog;
+    private ProgressDialog progressDialog;
+    private String baseUrl = "https://api.pragyan.org/";
     public static String[] sources = new String[]{"Newspapers", "Posters", "Social Media",
             "Website", "Friends", "Other"};
 
@@ -44,11 +43,11 @@ public class GeneralActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general);
-        submit = (Button) findViewById(R.id.submit);
+        Button submit = (Button) findViewById(R.id.submit);
 
         spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                R.layout.support_simple_spinner_dropdown_item, sources);
+                R.layout.spinner_dropdown_item, sources);
         spinner.setAdapter(adapter);
 
         qRating = new RatingBar[]{
@@ -61,7 +60,7 @@ public class GeneralActivity extends AppCompatActivity {
         eventId = intent.getIntExtra("eventId", 0);
         userId = intent.getIntExtra("user_id", 0);
         userToken = intent.getStringExtra("user_token");
-        baseUrl = intent.getStringExtra("baseUrl");
+        teamPin = intent.getIntExtra("team_pin", 0);
 
         submit.setOnClickListener(view -> {
                     if (isValidated()) {
@@ -83,8 +82,8 @@ public class GeneralActivity extends AppCompatActivity {
                         feedbackObservable.subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(response -> {
+                                    progressDialog.dismiss();
                                     if (response.getStatusCode() == 200) {
-                                        progressDialog.dismiss();
                                         displayDialog("Submitted Successfully!!");
                                         resetRatings((ViewGroup) findViewById(R.id.activity_main));
                                     } else {
@@ -103,13 +102,13 @@ public class GeneralActivity extends AppCompatActivity {
 
     private Feedback getFeedback() {
         Feedback feedback = new Feedback();
-        feedback.data = new ArrayList<>();
         feedback.user_id = userId;
         feedback.user_token = userToken;
         feedback.team_name = "QA";
-        feedback.team_pin = 456;
+        feedback.team_pin = teamPin;
         feedback.event_name = LoginActivity.events[eventId];
 
+        feedback.data = new ArrayList<>();
         int i;
         for (i = 0; i < 6; i++) {
             Data data = new Data();
@@ -216,7 +215,6 @@ public class GeneralActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent m = new Intent(this, LoginActivity.class);
         switch (item.getOrder()) {
             case 100: {
                 displayDialog("Do you want to logout?", "Yes");

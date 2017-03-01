@@ -26,21 +26,21 @@ import rx.schedulers.Schedulers;
 
 public class WorkshopsActivity extends AppCompatActivity {
 
-    Switch checkBox;
-    RatingBar qRating[];
-    String userToken, baseUrl;
-    int eventId, userId;
-    Retrofit retrofit;
-    Observable<Response> feedbackObservable;
-    Button submit;
-    AlertDialog alertDialog;
-    ProgressDialog progressDialog;
+    private Switch checkBox;
+    private RatingBar qRating[];
+    private String userToken;
+    private int eventId, userId, teamPin;
+    private Retrofit retrofit;
+    private Observable<Response> feedbackObservable;
+    private AlertDialog alertDialog;
+    private ProgressDialog progressDialog;
+    private String baseUrl = "https://api.pragyan.org/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workshops);
-        submit = (Button) findViewById(R.id.submit);
+        Button submit = (Button) findViewById(R.id.submit);
         checkBox = (Switch) findViewById(R.id.checkbox);
         checkBox.setChecked(true);
 
@@ -54,7 +54,7 @@ public class WorkshopsActivity extends AppCompatActivity {
         eventId = intent.getIntExtra("eventId", 0);
         userId = intent.getIntExtra("user_id", 0);
         userToken = intent.getStringExtra("user_token");
-        baseUrl = intent.getStringExtra("baseUrl");
+        teamPin = intent.getIntExtra("team_pin", 0);
 
         submit.setOnClickListener(view -> {
                     if (isValidated()) {
@@ -96,13 +96,13 @@ public class WorkshopsActivity extends AppCompatActivity {
 
     private Feedback getFeedback() {
         Feedback feedback = new Feedback();
-        feedback.data = new ArrayList<>();
         feedback.user_id = userId;
         feedback.user_token = userToken;
         feedback.team_name = "QA";
-        feedback.team_pin = 456;
+        feedback.team_pin = teamPin;
         feedback.event_name = LoginActivity.events[eventId];
 
+        feedback.data = new ArrayList<>();
         int i;
         for (i = 0; i < 6; i++) {
             Data data = new Data();
@@ -120,7 +120,6 @@ public class WorkshopsActivity extends AppCompatActivity {
         }
         return feedback;
     }
-
 
     private boolean isValidated() {
         if (qRating[0].getRating() != 0) {
@@ -210,7 +209,6 @@ public class WorkshopsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent m = new Intent(this, LoginActivity.class);
         switch (item.getOrder()) {
             case 100: {
                 displayDialog("Do you want to logout?", "Yes");

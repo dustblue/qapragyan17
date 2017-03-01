@@ -25,15 +25,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/pin"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/color_default"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:id="@+id/button2" />
 
     <TextView
-        android:text="Pin : "
+        android:text="@string/pin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/pin"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="30dp"
         android:layout_alignLeft="@id/pin"
         android:layout_alignStart="@id/pin"
         android:textSize="@dimen/activity_text_size"

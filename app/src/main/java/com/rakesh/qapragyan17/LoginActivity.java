@@ -20,16 +20,14 @@ import rx.schedulers.Schedulers;
 
 public class LoginActivity extends AppCompatActivity {
 
-    AlertDialog alertDialog;
-    ProgressDialog progressDialog;
-    Spinner spinner;
-    EditText username, password, editText;
-    Button button;
+    private AlertDialog alertDialog;
+    private ProgressDialog progressDialog;
+    private Spinner spinner;
+    private EditText username, password;
     Retrofit retrofit;
     Observable<Response> loginObservable;
-    String un, pw;
-    public static String baseUrl;
-    public static String url = "https://api.pragyan.org/";
+    private String un, pw;
+    private String baseUrl = "https://api.pragyan.org/";
     public static String[] events = new String[]{"General Response", "Construction Mgmt", "Cross-Platform Dev",
             "Process Design", "Swarm Robotics", "Quadcopter", "Autotrix", "Quadbot",
             "Network Designing", "Nikon Photography", "Texas Instruments", "SEBI", "NI IoT",
@@ -42,19 +40,17 @@ public class LoginActivity extends AppCompatActivity {
 
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
-        editText = (EditText) findViewById(R.id.url);
 
         spinner = (Spinner) findViewById(R.id.spinner);
-        button = (Button) findViewById(R.id.button);
+        Button button = (Button) findViewById(R.id.button);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                R.layout.support_simple_spinner_dropdown_item, events);
+                R.layout.spinner_dropdown_item, events);
         spinner.setAdapter(adapter);
 
         button.setOnClickListener(view -> {
             un = username.getText().toString();
             pw = password.getText().toString();
-            baseUrl = editText.getText().toString();
             if (!un.equals("")) {
                 if (!pw.equals("")) {
                     progressDialog = new ProgressDialog(this);
@@ -101,12 +97,16 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtra("eventId", spinner.getSelectedItemPosition());
         intent.putExtra("user_id", id);
         intent.putExtra("user_token", token);
-        intent.putExtra("baseUrl", baseUrl);
         startActivity(intent);
         finish();
     }
 
     private void displayDialog(String text) {
+        if (alertDialog != null) {
+            if (alertDialog.isShowing()) {
+                alertDialog.dismiss();
+            }
+        }
         alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle("Feedback Pragyan '17");
         alertDialog.setMessage(text);

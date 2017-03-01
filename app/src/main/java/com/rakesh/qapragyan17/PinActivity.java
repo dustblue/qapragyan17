@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -18,15 +20,14 @@ import rx.schedulers.Schedulers;
 
 public class PinActivity extends AppCompatActivity {
 
-    AlertDialog alertDialog;
-    ProgressDialog progressDialog;
-    EditText pinText;
-    String userToken, pin;
-    int eventId, userId;
-    Button button;
+    private AlertDialog alertDialog;
+    private ProgressDialog progressDialog;
+    private EditText pinText;
+    private String userToken, pin;
+    private int eventId, userId;
     Retrofit retrofit;
     Observable<Response> pinObservable;
-    String baseUrl;
+    private String baseUrl = "https://api.pragyan.org/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +35,12 @@ public class PinActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pin);
 
         pinText = (EditText) findViewById(R.id.pin);
-        button = (Button) findViewById(R.id.button2);
+        Button button = (Button) findViewById(R.id.button2);
 
         Intent intent = getIntent();
         eventId = intent.getIntExtra("eventId", 0);
         userId = intent.getIntExtra("user_id", 0);
         userToken = intent.getStringExtra("user_token");
-        baseUrl = intent.getStringExtra("baseUrl");
 
         button.setOnClickListener(view -> {
             pin = pinText.getText().toString();
@@ -65,7 +65,7 @@ public class PinActivity extends AppCompatActivity {
                         .subscribe(response -> {
                             progressDialog.dismiss();
                             if (response.getStatusCode() == 200) {
-                                onPinAuth();
+                                onPinAuth(pin);
                             } else {
                                 displayDialog("Error : " + response.getStatusCode()
                                         + " Try Again");
@@ -82,7 +82,7 @@ public class PinActivity extends AppCompatActivity {
         });
     }
 
-    private void onPinAuth() {
+    private void onPinAuth(String pin) {
         Intent intent;
         if (eventId == 0) {
             intent = new Intent(this, GeneralActivity.class);
@@ -92,13 +92,18 @@ public class PinActivity extends AppCompatActivity {
         intent.putExtra("eventId", eventId);
         intent.putExtra("user_token", userToken);
         intent.putExtra("user_id", userId);
-        intent.putExtra("baseUrl", baseUrl);
+        intent.putExtra("team_pin", Integer.parseInt(pin));
 
         startActivity(intent);
         finish();
     }
 
     private void displayDialog(String text) {
+        if (alertDialog != null) {
+            if (alertDialog.isShowing()) {
+                alertDialog.dismiss();
+            }
+        }
         alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle("Feedback Pragyan '17");
         alertDialog.setMessage(text);
@@ -107,6 +112,42 @@ public class PinActivity extends AppCompatActivity {
                     dialog.dismiss();
                 });
         alertDialog.show();
+    }
+
+    private void displayDialog(String text, String reply) {
+        if (alertDialog != null) {
+            if (alertDialog.isShowing()) {
+                alertDialog.dismiss();
+            }
+        }
+        alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Feedback Pragyan '17");
+        alertDialog.setMessage(text);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, reply,
+                (dialog, which) -> {
+                    dialog.dismiss();
+                    Intent m = new Intent(this, LoginActivity.class);
+                    startActivity(m);
+                    finish();
+                });
+        alertDialog.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getOrder()) {
+            case 100: {
+                displayDialog("Do you want to logout?", "Yes");
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
